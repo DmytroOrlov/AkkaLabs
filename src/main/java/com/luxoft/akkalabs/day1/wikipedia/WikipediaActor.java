@@ -12,21 +12,18 @@ public class WikipediaActor extends UntypedActor {
 
     @Override
     public void onReceive(Object message) throws Exception {
-        if (message instanceof String)
-            for (String title : getTitle((String) message).asSet())
+        if (message instanceof String) {
+            final String url = (String) message;
+            for (String title : getOptTitle(url).asSet())
                 System.out.println(title);
+        }
     }
 
-    private static Optional<String> getTitle(String message) throws MalformedURLException {
-        for (WikipediaPage page : getPage(message).asSet())
-            return Optional.of(page.getTitle());
-        return Optional.absent();
-    }
-
-    public static Optional<WikipediaPage> getPage(String message) throws MalformedURLException {
+    private static Optional<String> getOptTitle(String message) throws MalformedURLException {
         final URL url = new URL(message);
-        return url.getHost().toLowerCase().endsWith(".wikipedia.org") && url.getPath().length() > 6 ?
-                Optional.fromNullable(WikipediaClient.getPage(url.getHost().substring(0, 2), url.getPath().substring(6))) :
-                Optional.<WikipediaPage>absent();
+        if (url.getHost().toLowerCase().endsWith(".wikipedia.org") && url.getPath().length() > 6) {
+            final WikipediaPage page = WikipediaClient.getPage(url.getHost().substring(0, 2), url.getPath().substring(6));
+            return page != null ? Optional.of(page.getTitle()) : Optional.<String>absent();
+        } else return Optional.absent();
     }
 }

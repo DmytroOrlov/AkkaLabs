@@ -1,21 +1,31 @@
 package com.luxoft.akkalabs.day1.wikipedia2.actors;
 
 import akka.actor.UntypedActor;
-import com.luxoft.akkalabs.day1.wikipedia2.web.wikitopics.Deliver;
-import com.luxoft.akkalabs.day1.wikipedia2.web.wikitopics.Register;
-import com.luxoft.akkalabs.day1.wikipedia2.web.wikitopics.Unregister;
+import com.luxoft.akkalabs.day1.wikipedia2.web.wikitopics.*;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class ConnectionsActor extends UntypedActor {
+    private final Map<String, WikipediaListener> wikiListeners = new HashMap<>();
 
     @Override
     public void onReceive(Object message) throws Exception {
         if (message instanceof Deliver) {
-            //...
+            final Iterator<WikipediaListener> iterator = wikiListeners.values().iterator();
+            while (iterator.hasNext()) {
+                final WikipediaListener listener = iterator.next();
+                try {
+                    listener.deliver(((Deliver) message).getPage());
+                } catch (NotDeliveredException e) {
+                    wikiListeners.remove(listener.getStreamId());
+                }
+            }
         } else if (message instanceof Register) {
-            //...
-        }
-        if (message instanceof Unregister) {
-            //...
-        }
+            final WikipediaListener listener = ((Register) message).getListener();
+            wikiListeners.put(listener.getStreamId(), listener);
+        } else if (message instanceof Unregister)
+            wikiListeners.remove(((Unregister) message).getId());
     }
 }
