@@ -28,7 +28,7 @@ public class CollectTweets implements Callable<Result> {
         try {
             for (int i = 0; i < 10; i++) {
                 list.add(apple.next());
-                System.out.print(word);
+//                System.out.print(word);
             }
             return new Result(word, Collections.unmodifiableList(list));
         } finally {

@@ -23,9 +23,10 @@ public class LanguagesCounterActor extends UntypedActor {
     @Override
     public void onReceive(Object message) throws Exception {
         if (message instanceof FinalResult) {
-            final Integer curr = languages.get(((FinalResult) message).getKeyword());
-            languages.put(((FinalResult) message).getKeyword(),
-                    (curr != null ? curr : 0) + ((FinalResult) message).getLanguages().size());
+            final FinalResult result = (FinalResult) message;
+            final Integer curr = languages.get(result.getKeyword());
+            languages.put(result.getKeyword(),
+                    (curr != null ? curr : 0) + result.getLanguages().size());
         } else if ("get".equals(message)) {
             getSender().tell(ImmutableMap.copyOf(languages), getSelf());
         }
@@ -36,7 +37,7 @@ public class LanguagesCounterActor extends UntypedActor {
         super.preStart();
         final List<String> keywords = Arrays.asList("Google", "Apple", "Android", "iPhone", "Lady Gaga");
         for (String keyword : keywords) {
-            final Future<Result> future = Futures.future(new CollectTweets(context().system(), keyword), context().system().dispatcher());
+            final Future<Result> future = Futures.future(new CollectTweets(context().system(), keyword), context().dispatcher());
             final Future<FinalResult> mapped = future.map(new ResultMapper(), context().system().dispatcher());
             akka.pattern.Patterns.pipe(mapped, context().dispatcher()).to(getSelf());
         }
