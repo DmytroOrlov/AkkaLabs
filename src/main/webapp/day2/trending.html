@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Lab 4</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+    </head>
+    <body>
+        <style>
+            #results{
+                width:100%;
+                height: 500px;
+                overflow: auto;
+                vertical-align: top;
+            }
+            #log{
+                display:inline-block;
+                width: 50%;                
+                border:1px solid black;
+                vertical-align: top;
+                max-height: 480px;
+                overflow: auto;
+            }
+
+            #trend{
+                display:inline-block;
+                width: 40%;                
+                border:1px solid blue;
+                vertical-align: top;
+            }
+
+        </style>
+        <h1>Trending in topics</h1>
+
+        <div id="control">
+            <input type="text" name="keyword" id="keyword">
+            <button id="subscribe">Subscribe</button>
+            <button id="unsubscribe">Unsubscribe</button>
+        </div>
+
+        <div id="results">
+            <div id="log"></div>
+            <div id="trend"></div>
+        </div>
+
+        <script>
+            $(window).load(function () {
+                var socket = new WebSocket('ws://' + window.location.host + "/AkkaLabs/day2/trending");
+
+                var subscribed = false;
+                var subscribedTo;
+
+                var sub = function () {
+                    var keyword = $("#keyword").val();
+                    if (keyword && keyword.length > 0) {
+                        $("#subscribe").hide();
+                        $("#unsubscribe").show();
+                        $("#keyword").attr("disabled", true);
+                        socket.send("subscribe " + keyword);
+                        subscribed = true;
+                        subscribedTo = keyword;
+                    }
+                };
+                var unsub = function () {
+                    if (subscribed) {
+                        socket.send("unsubscribe " + subscribedTo);
+                        subscribed = false;
+                        subscribedTo = null;
+                        $("#keyword").attr("disabled", false);
+                        $("#subscribe").show();
+                        $("#unsubscribe").hide();
+                    }
+                };
+
+                $("#unsubscribe").hide();
+
+                $("#subscribe").click(sub);
+                $("#unsubscribe").click(unsub);
+                socket.onmessage = function (event) {
+                    var idx = event.data.indexOf(" ");
+                    var command = event.data.substring(0, idx);
+                    var data = event.data.substring(idx + 1);
+                    console.log(command + " " + data);
+                    if (command === "trend") {
+                        var a = JSON.parse(data);
+                        $("#trend").html("");
+                        a.forEach(function (each) {
+                            var block = $("<p>").html(each);
+                            var button = $("<button>");
+                            button.html("+");
+                            button.click(function () {
+                                socket.send("upvote " + each);
+                            });
+                            block.append(button)
+                            $("#trend").append(block);
+                        })
+
+                    }
+                    if (command === "tweet") {
+                        $("#log").append($("<p>").html(data));
+                    }
+                };
+
+                socket.onstop = unsub;
+            });
+        </script>
+    </body>
+</html>

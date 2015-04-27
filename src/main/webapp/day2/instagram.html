@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Lab 4</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+    </head>
+    <body>
+        <style>
+            #log{
+                max-height: 480px;
+                overflow: auto;
+            }
+            #log img{
+                width: 100px;
+                height: 100px;
+            }
+        </style>
+        <h1>Instagram pics from Twitter</h1>
+
+        <div id="log"></div>
+
+        <script>
+            $(window).load(function () {
+                var socket = new WebSocket('ws://' + window.location.host + "/AkkaLabs/day2/instagram");
+                socket.onmessage = function (event) {
+                    $("#log").append($("<img>").attr("src", event.data));
+                    if ($("#log").children().size() > 200) {
+                        $("#log").children().first().remove();
+                    }
+                };
+            });
+        </script>
+    </body>
+</html>
