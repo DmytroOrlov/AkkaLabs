@@ -4,11 +4,10 @@ import akka.dispatch.Mapper;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ImmutableMap;
 import com.luxoft.akkalabs.clients.twitter.TweetObject;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by dorlov on 27/4/15.
@@ -23,9 +22,9 @@ public class ResultMapper extends Mapper<Result, FinalResult> {
                 return input.getLanguage();
             }
         });
-        final Map<String, Integer> languages = new HashMap<String, Integer>();
+        final ImmutableMap.Builder<String, Integer> builder = ImmutableMap.builder();
         for (String l : index.keySet())
-            languages.put(l, index.get(l).size());
-        return new FinalResult(parameter.getKeyword(), languages);
+            builder.put(l, index.get(l).size());
+        return new FinalResult(parameter.getKeyword(), builder.build());
     }
 }
