@@ -17,15 +17,16 @@ public class WikipediaActor extends UntypedActor {
                 System.out.println(title);
     }
 
-    public static Optional<String> getTitle(String message) throws MalformedURLException {
-        final URL url = new URL(message);
-        if (url.getHost().toLowerCase().endsWith(".wikipedia.org") && url.getPath().length() > 6) {
-            final String lang = url.getHost().substring(0, 2);
-            final String term = url.getPath().substring(6);
-            final WikipediaPage page = WikipediaClient.getPage(lang, term);
-            if (page != null)
-                return Optional.of(page.getTitle());
-        }
+    private static Optional<String> getTitle(String message) throws MalformedURLException {
+        for (WikipediaPage page : getPage(message).asSet())
+            return Optional.of(page.getTitle());
         return Optional.absent();
+    }
+
+    public static Optional<WikipediaPage> getPage(String message) throws MalformedURLException {
+        final URL url = new URL(message);
+        return url.getHost().toLowerCase().endsWith(".wikipedia.org") && url.getPath().length() > 6 ?
+                Optional.fromNullable(WikipediaClient.getPage(url.getHost().substring(0, 2), url.getPath().substring(6))) :
+                Optional.<WikipediaPage>absent();
     }
 }
