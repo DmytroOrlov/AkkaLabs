@@ -11,9 +11,9 @@ public class Config {
     }
 
     static {
-        properties.put("twitter.customer.key", "8BJ9xKA15LfzoTzODgnUGy5Ha");
-        properties.put("twitter.customer.secret", "gWMpa3023Jl62tsOXYxGr7xGf6MwW5tY0Y4xckSe6g2Ob9IxVg");
-        properties.put("twitter.access.token", "2821418188-Kc1rOn0GfEfBW8DAwHgHOkDPGsxiXudRHSfhMal");
-        properties.put("twitter.access.secret", "SUIdoBOion4z1oCa19z2Tmm4FzmLfHF0mzPBYSuXhHgHc");
+        properties.put("twitter.customer.key", "yJmaM7dcTqAIMQjfZpFwoUc02");
+        properties.put("twitter.customer.secret", "WH1lpA0qslTjFYH6qIsTRBbUDISpc8t2oMXOuXQepD4Kbr6axm");
+        properties.put("twitter.access.token", "797617302-AQxM4rZo5glbJHWNcQLnXCsqo253L6jjoluRFMi4");
+        properties.put("twitter.access.secret", "KPbAfMep37SL3PD9qO5R6YB7WLk6aYgARVK3gnA738F07");
     }
 }
