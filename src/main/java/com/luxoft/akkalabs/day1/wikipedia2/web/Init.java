@@ -8,11 +8,11 @@ import com.luxoft.akkalabs.clients.twitter.TwitterClients;
 import com.luxoft.akkalabs.day1.wikipedia.TweetLinksActor;
 import com.luxoft.akkalabs.day1.wikipedia2.actors.ConnectionsActor;
 import com.luxoft.akkalabs.day1.wikipedia2.actors.WikipediaActor2;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
 
-@WebListener
+//@WebListener
 public class Init implements ServletContextListener {
     public static final String ACTOR_SYSTEM = "actorSystem";
 
