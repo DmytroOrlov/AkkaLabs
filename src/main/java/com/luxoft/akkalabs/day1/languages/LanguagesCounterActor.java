@@ -37,8 +37,8 @@ public class LanguagesCounterActor extends UntypedActor {
         final List<String> keywords = Arrays.asList("Google", "Apple", "Android", "iPhone", "Lady Gaga");
         for (String keyword : keywords) {
             final Future<Result> future = Futures.future(new CollectTweets(context().system(), keyword), context().system().dispatcher());
-            future.map(new ResultMapper(), context().system().dispatcher()).
-                    onSuccess(new SendToActor(getSelf()), context().dispatcher());
+            final Future<FinalResult> mapped = future.map(new ResultMapper(), context().system().dispatcher());
+            akka.pattern.Patterns.pipe(mapped, context().dispatcher()).to(getSelf());
         }
     }
 }
