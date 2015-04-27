@@ -3,11 +3,9 @@ package com.luxoft.akkalabs.day1.futures;
 import akka.actor.ActorSystem;
 import akka.dispatch.Futures;
 import akka.dispatch.OnSuccess;
-import scala.Function1;
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
-import scala.runtime.BoxedUnit;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +41,7 @@ public class AppleVsGoogle {
 
     private static void print(Iterable<FinalResult> results) {
         for (FinalResult result : results) {
-            System.out.println(result.getKeyword() + ":");
+            System.out.println("\n" + result.getKeyword() + ":");
             for (String lang : result.getLanguages().keySet()) {
                 System.out.println(lang + " " + result.getLanguages().get(lang));
             }

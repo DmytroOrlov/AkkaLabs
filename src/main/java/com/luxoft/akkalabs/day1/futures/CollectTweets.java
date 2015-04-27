@@ -26,8 +26,10 @@ public class CollectTweets implements Callable<Result> {
         final QueueTwitterClient apple = TwitterClients.start(system, word);
         final ArrayList<TweetObject> list = new ArrayList<TweetObject>();
         try {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; i++) {
                 list.add(apple.next());
+                System.out.print(word);
+            }
             return new Result(word, Collections.unmodifiableList(list));
         } finally {
             apple.stop();
