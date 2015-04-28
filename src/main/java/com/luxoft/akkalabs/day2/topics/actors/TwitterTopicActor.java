@@ -27,7 +27,8 @@ public class TwitterTopicActor extends UntypedActor {
     @Override
     public void onReceive(Object message) throws Exception {
         if (message instanceof TweetObject) {
-            //todo
+            for (ActorRef subscriber : subscribers)
+                subscriber.forward(message, context());
         } else if (message instanceof SubscribeToTopic) {
             subscribers.add(sender());
         } else if (message instanceof UnsubscribeFromTopic) {
