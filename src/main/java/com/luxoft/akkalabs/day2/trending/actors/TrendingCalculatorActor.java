@@ -41,12 +41,15 @@ public class TrendingCalculatorActor extends UntypedActor {
                     return input.length() > 3 && !input.startsWith("http://") && !input.startsWith("https://");
                 }
             });
-            for (String w : ws) {
-                Integer i = words.get(w);
-                words.put(w, (i != null ? i : 0) + 1);
-            }
-        } else if (message instanceof UpvoteTrending) {
+            for (String w : ws)
+                addPoints(w, 1);
+        } else if (message instanceof UpvoteTrending)
+            for (String w : ((UpvoteTrending) message).getKeyword().split(" "))
+                addPoints(w, 5);
+    }
 
-        }
+    private void addPoints(String w, int points) {
+        Integer i = words.get(w);
+        words.put(w, (i != null ? i : 0) + points);
     }
 }
