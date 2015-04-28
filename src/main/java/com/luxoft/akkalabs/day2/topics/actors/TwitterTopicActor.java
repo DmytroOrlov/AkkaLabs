@@ -2,8 +2,8 @@ package com.luxoft.akkalabs.day2.topics.actors;
 
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
-import com.luxoft.akkalabs.clients.twitter.QueueTwitterClient;
 import com.luxoft.akkalabs.clients.twitter.TweetObject;
+import com.luxoft.akkalabs.clients.twitter.TwitterClient;
 import com.luxoft.akkalabs.clients.twitter.TwitterClients;
 import com.luxoft.akkalabs.day2.topics.messages.StopTopic;
 import com.luxoft.akkalabs.day2.topics.messages.SubscribeToTopic;
@@ -18,7 +18,7 @@ public class TwitterTopicActor extends UntypedActor {
     private final Set<ActorRef> subscribers = new HashSet<>();
     private final String keyword;
 
-    private QueueTwitterClient twitterClient;
+    private TwitterClient twitterClient;
 
     public TwitterTopicActor(String keyword) {
         this.keyword = keyword;
@@ -38,7 +38,9 @@ public class TwitterTopicActor extends UntypedActor {
         } else if (message instanceof StopTopic) {
             if (!subscribers.isEmpty())
                 for (ActorRef subscriber : subscribers)
-                    getContext().parent().tell(new SubscribeToTopic(keyword), subscriber);
+                    context().parent().tell(
+                            new SubscribeToTopic(keyword),
+                            subscriber);
             context().stop(self());
         }
     }
@@ -46,7 +48,7 @@ public class TwitterTopicActor extends UntypedActor {
     @Override
     public void preStart() throws Exception {
         super.preStart();
-        twitterClient = TwitterClients.start(context().system(), keyword);
+        twitterClient = TwitterClients.start(context().system(), self(), keyword);
     }
 
     @Override
