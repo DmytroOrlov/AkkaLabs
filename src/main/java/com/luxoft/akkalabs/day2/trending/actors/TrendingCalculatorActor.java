@@ -44,7 +44,7 @@ public class TrendingCalculatorActor extends UntypedActor {
                     public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
                         return o2.getValue().compareTo(o1.getValue());
                     }
-                })).limit(5);
+                })).limit(10);
                 final CurrentTrending trands = new CurrentTrending(top.transform(new Function<Map.Entry<String, Integer>, String>() {
                     @Nullable
                     @Override
@@ -64,8 +64,7 @@ public class TrendingCalculatorActor extends UntypedActor {
             for (String w : ws)
                 addPoints(w, 1);
         } else if (message instanceof UpvoteTrending)
-            for (String w : ((UpvoteTrending) message).getKeyword().split(" "))
-                addPoints(w, 5);
+                addPoints(((UpvoteTrending) message).getKeyword(), 5);
     }
 
     private void addPoints(String w, int points) {
