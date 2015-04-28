@@ -2,7 +2,9 @@ package com.luxoft.akkalabs.day1.wikipedia2.web.wikitopics;
 
 import akka.actor.ActorSelection;
 import akka.actor.ActorSystem;
-import com.luxoft.akkalabs.day1.wikipedia2.web.Init;
+import com.luxoft.akkalabs.day1.wikipedia2.actors.Register;
+import com.luxoft.akkalabs.day1.wikipedia2.actors.Unregister;
+import com.luxoft.akkalabs.day1.wikipedia2.web.InitContext;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.AsyncEvent;
@@ -31,7 +33,7 @@ public class WikipediaStream extends HttpServlet {
         final AsyncContext asyncContext = req.startAsync();
         asyncContext.setTimeout(240000);
 
-        final ActorSystem system = (ActorSystem) getServletContext().getAttribute(Init.ACTOR_SYSTEM);
+        final ActorSystem system = (ActorSystem) getServletContext().getAttribute(InitContext.systemName());
         final ActorSelection actorSelection = system.actorSelection("/user/connections");
         final String streamId = UUID.randomUUID().toString();
         actorSelection.tell(new Register(new WikipediaListenerImpl(streamId, asyncContext)), null);

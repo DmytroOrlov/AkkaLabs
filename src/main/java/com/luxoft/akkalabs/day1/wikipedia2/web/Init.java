@@ -11,6 +11,7 @@ import com.luxoft.akkalabs.day1.wikipedia2.actors.WikipediaActor2;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 
 //@WebListener
 public class Init implements ServletContextListener {

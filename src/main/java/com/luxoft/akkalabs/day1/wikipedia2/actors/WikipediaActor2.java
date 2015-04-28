@@ -4,7 +4,6 @@ import akka.actor.UntypedActor;
 import akka.dispatch.Futures;
 import com.luxoft.akkalabs.clients.wikipedia.WikipediaClient;
 import com.luxoft.akkalabs.clients.wikipedia.WikipediaPage;
-import com.luxoft.akkalabs.day1.wikipedia2.web.wikitopics.Deliver;
 
 import javax.annotation.Nullable;
 import java.net.MalformedURLException;
@@ -28,7 +27,7 @@ public class WikipediaActor2 extends UntypedActor {
                     final WikipediaPage page = getWikipediaPage(url);
                     if (page != null)
                         context().system().actorSelection("/user/connections").
-                                tell(new Deliver(page), self());
+                                tell(new Deliver(page), null);
                     return page;
                 }
             }, context().dispatcher());

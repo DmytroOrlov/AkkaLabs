@@ -17,15 +17,15 @@ public class ConnectionsActor extends UntypedActor {
             while (iterator.hasNext()) {
                 final WikipediaListener listener = iterator.next();
                 try {
-                    listener.deliver(((Deliver) message).getPage());
+                    listener.deliver(((Deliver) message).page());
                 } catch (NotDeliveredException e) {
                     wikiListeners.remove(listener.getStreamId());
                 }
             }
         } else if (message instanceof Register) {
-            final WikipediaListener listener = ((Register) message).getListener();
+            final WikipediaListener listener = ((Register) message).listener();
             wikiListeners.put(listener.getStreamId(), listener);
         } else if (message instanceof Unregister)
-            wikiListeners.remove(((Unregister) message).getId());
+            wikiListeners.remove(((Unregister) message).id());
     }
 }
