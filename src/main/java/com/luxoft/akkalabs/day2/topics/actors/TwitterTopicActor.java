@@ -27,7 +27,7 @@ public class TwitterTopicActor extends UntypedActor {
     @Override
     public void onReceive(Object message) throws Exception {
         if (message instanceof TweetObject) {
-
+            //todo
         } else if (message instanceof SubscribeToTopic) {
             subscribers.add(sender());
         } else if (message instanceof UnsubscribeFromTopic) {
@@ -35,7 +35,10 @@ public class TwitterTopicActor extends UntypedActor {
             if (subscribers.isEmpty())
                 getContext().parent().tell(new TopicIsEmpty(keyword), self());
         } else if (message instanceof StopTopic) {
-
+            if (!subscribers.isEmpty())
+                for (ActorRef subscriber : subscribers)
+                    getContext().parent().tell(new SubscribeToTopic(keyword), subscriber);
+            context().stop(self());
         }
     }
 
