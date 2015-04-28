@@ -2,7 +2,9 @@ package com.luxoft.akkalabs.day2.trending.actors;
 
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import akka.actor.Terminated;
 import akka.actor.UntypedActor;
+import com.luxoft.akkalabs.clients.twitter.TweetObject;
 import com.luxoft.akkalabs.day2.topics.actors.TwitterTopicActor;
 import com.luxoft.akkalabs.day2.topics.messages.SubscribeToTopic;
 import com.luxoft.akkalabs.day2.topics.messages.UnsubscribeFromTopic;
@@ -24,7 +26,9 @@ public class TwitterTopicProxyActor extends UntypedActor {
 
     @Override
     public void onReceive(Object message) throws Exception {
-        if (!sender().equals(actor)) {
+        if (message instanceof Terminated) {
+            context().stop(self()); // todo check
+        } else if (!sender().equals(actor)) {
             if (message instanceof SubscribeToTopic) {
                 if (subscribers.isEmpty()) {
                     subscribers.add(sender());
@@ -36,6 +40,15 @@ public class TwitterTopicProxyActor extends UntypedActor {
                 actor.tell(new UnsubscribeFromTopic(keyword), self());
             } else
                 actor.forward(message, context());
+        } else {
+            if (message instanceof TweetObject) {
+                for (ActorRef subscriber : subscribers)
+                    subscriber.forward(message, context());
+
+                context().actorSelection("/user/trending").forward(message, context());
+            } else {
+                context().parent().forward(message, context());
+            }
         }
     }
 
