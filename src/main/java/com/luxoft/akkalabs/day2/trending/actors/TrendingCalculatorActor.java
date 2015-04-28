@@ -42,20 +42,24 @@ public class TrendingCalculatorActor extends UntypedActor {
     @Override
     public void onReceive(Object message) throws Exception {
         if (message == PING) {
-            final CurrentTrending trands = new CurrentTrending(FluentIterable.from(words.keySet()).limit(3).toList());
-            context().actorSelection("/user/sessions").tell(new OutgoingBroadcast(trands), self());
-        } else if (message instanceof TweetObject) {
-            final FluentIterable<String> ws = FluentIterable.of(((TweetObject) message).getText().split(" ")).filter(new Predicate<String>() {
-                @Override
-                public boolean apply(String input) {
-                    return input.length() > 3 && !input.startsWith("http://") && !input.startsWith("https://");
-                }
-            });
-            for (String w : ws)
-                addPoints(w, 1);
-        } else if (message instanceof UpvoteTrending)
-            for (String w : ((UpvoteTrending) message).getKeyword().split(" "))
-                addPoints(w, 5);
+            if (!words.isEmpty()) {
+                final CurrentTrending trands = new CurrentTrending(FluentIterable.from(words.keySet()).limit(3).toList());
+                context().actorSelection("/user/sessions").tell(new OutgoingBroadcast(trands), self());
+            }
+        } else {
+            if (message instanceof TweetObject) {
+                final FluentIterable<String> ws = FluentIterable.of(((TweetObject) message).getText().split(" ")).filter(new Predicate<String>() {
+                    @Override
+                    public boolean apply(String input) {
+                        return input.length() > 3 && !input.startsWith("http://") && !input.startsWith("https://");
+                    }
+                });
+                for (String w : ws)
+                    addPoints(w, 1);
+            } else if (message instanceof UpvoteTrending)
+                for (String w : ((UpvoteTrending) message).getKeyword().split(" "))
+                    addPoints(w, 5);
+        }
     }
 
     private void addPoints(String w, int points) {

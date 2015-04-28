@@ -37,7 +37,8 @@ public class TwitterTopicProxyActor extends UntypedActor {
                     subscribers.add(sender());
             } else if (message instanceof UnsubscribeFromTopic) {
                 subscribers.remove(sender());
-                actor.tell(new UnsubscribeFromTopic(keyword), self());
+                if (subscribers.isEmpty())
+                    actor.tell(new UnsubscribeFromTopic(keyword), self());
             } else
                 actor.forward(message, context());
         } else {

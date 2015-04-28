@@ -25,7 +25,7 @@ public class Init implements ServletContextListener {
         ActorSystem system = ActorSystem.create(ACTOR_SYSTEM_NAME);
         sce.getServletContext().setAttribute(ACTOR_SYSTEM_KEY, system);
 
-        system.actorOf(Props.create(TrendingCalculatorActor.class), "tranding");
+        system.actorOf(Props.create(TrendingCalculatorActor.class), "trending");
         system.actorOf(Props.create(TwitterTopicsHubActor.class, TwitterTopicProxyActor.class), "topics");
         system.actorOf(Props.create(SessionsHubActor.class, TrendingSessionProcessor.class), "sessions");
 
