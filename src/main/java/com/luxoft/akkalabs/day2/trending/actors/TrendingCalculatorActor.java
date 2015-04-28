@@ -4,18 +4,26 @@ import akka.actor.UntypedActor;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.luxoft.akkalabs.clients.twitter.TweetObject;
+import com.luxoft.akkalabs.day2.sessions.messages.OutgoingBroadcast;
+import com.luxoft.akkalabs.day2.trending.messages.CurrentTrending;
 import com.luxoft.akkalabs.day2.trending.messages.UpvoteTrending;
 import scala.concurrent.duration.FiniteDuration;
 
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.Map;
+import java.util.TreeMap;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class TrendingCalculatorActor extends UntypedActor {
     private static final Object PING = new Object();
 
-    private final Map<String, Integer> words = new HashMap<>();
+    private final Map<String, Integer> words = new TreeMap<String, Integer>(new Comparator<String>() {
+        @Override
+        public int compare(String o1, String o2) {
+            return words.get(o1).compareTo(words.get(o2));
+        }
+    });
 
     @Override
     public void preStart() throws Exception {
@@ -34,6 +42,8 @@ public class TrendingCalculatorActor extends UntypedActor {
     @Override
     public void onReceive(Object message) throws Exception {
         if (message == PING) {
+            final CurrentTrending trands = new CurrentTrending(FluentIterable.from(words.keySet()).limit(3).toList());
+            context().actorSelection("/user/sessions").tell(new OutgoingBroadcast(trands), self());
         } else if (message instanceof TweetObject) {
             final FluentIterable<String> ws = FluentIterable.of(((TweetObject) message).getText().split(" ")).filter(new Predicate<String>() {
                 @Override
