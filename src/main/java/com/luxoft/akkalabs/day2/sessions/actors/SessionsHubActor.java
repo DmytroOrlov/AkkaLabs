@@ -1,5 +1,6 @@
 package com.luxoft.akkalabs.day2.sessions.actors;
 
+import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
 import com.luxoft.akkalabs.day2.sessions.SessionProcessor;
@@ -31,7 +32,8 @@ public class SessionsHubActor extends UntypedActor {
             final String sessionId = ((OutgoingToSession) message).getSessionId();
             getContext().getChild(sessionId).forward(message, context());
         } else if (message instanceof OutgoingBroadcast) {
-            getContext().getChild("*").forward(message, context());
+            for (ActorRef child : getContext().getChildren())
+                child.forward(message, context());
         }
     }
 }
