@@ -30,14 +30,15 @@ public class InstagramProcessor implements SessionProcessor {
 
     @Override
     public void incoming(String message) {
-        System.out.println("in");
     }
 
     @Override
     public void outgoing(Object message) throws IOException {
-        if (message instanceof TweetObject)
+        if (message instanceof TweetObject) {
             for (String url : ((TweetObject) message).getUrls())
                 if (url.startsWith("https://instagram.com/p/") && Math.random() < 0.1)
                     context.self().tell(url, context.self());
+        } else if (message instanceof String)
+            session.getBasicRemote().sendText((String) message);
     }
 }
