@@ -9,11 +9,6 @@ import javax.websocket.MessageHandler;
 import javax.websocket.Session;
 
 public class SessionActor extends UntypedActor {
-//    private final Session session;
-//    public SessionActor(Session session) {
-//        this.session = session;
-//    }
-
     private final String sessionId;
     private final Session session;
     private final SessionProcessor processor;
