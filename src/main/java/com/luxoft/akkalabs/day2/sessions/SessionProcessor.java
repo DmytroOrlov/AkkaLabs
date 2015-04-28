@@ -1,8 +1,9 @@
 package com.luxoft.akkalabs.day2.sessions;
 
 import akka.actor.ActorContext;
-import java.io.IOException;
+
 import javax.websocket.Session;
+import java.io.IOException;
 
 public interface SessionProcessor {
 

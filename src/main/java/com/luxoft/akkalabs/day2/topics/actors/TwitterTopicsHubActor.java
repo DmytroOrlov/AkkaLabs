@@ -22,7 +22,7 @@ public class TwitterTopicsHubActor extends UntypedActor {
             final String keyword = ((SubscribeToTopic) message).getKeyword();
             ActorRef child = getContext().getChild(keyword);
             if (child == null)
-                child = context().actorOf(Props.create(topicClass), keyword);
+                child = context().actorOf(Props.create(topicClass, keyword), keyword);
             child.forward(message, context());
         } else if (message instanceof UnsubscribeFromTopic) {
             final String keyword = ((UnsubscribeFromTopic) message).getKeyword();
