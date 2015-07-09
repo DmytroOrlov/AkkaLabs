@@ -30,5 +30,5 @@ class InitContext extends ServletContextListener {
 }
 
 object InitContext {
-  val systemName: String = "scalaActorSystem"
+  val systemName: String = "actorSystem"
 }

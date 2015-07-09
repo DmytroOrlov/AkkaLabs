@@ -16,7 +16,7 @@ public class WikipediaClient {
 
     public static WikipediaPage getPage(String langCode, String name) {
         try {
-            URL url = new URL("http://" + langCode + ".wikipedia.org/w/api.php?action=parse&format=json&prop=text&section=0&page=" + name);
+            URL url = new URL("https://" + langCode + ".wikipedia.org/w/api.php?action=parse&format=json&prop=text&section=0&page=" + name);
             JSONObject data = new JSONObject(readString(url.openStream()));
             if (data.has("parse")) {
                 JSONObject page = data.getJSONObject("parse");
